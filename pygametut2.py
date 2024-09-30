@@ -23,7 +23,9 @@ class Game:
         self.colorlist = ["#FFA07A", "#FF8C00", "#FF6347", "#FF7F50", "#FFB347", "#E9967A", "#F08080", "#FFA500", "#FF4500", "#FF7043", "#FF6F00", "#FF9E80", "#FFA07A", "#FF8C00", "#FF6347", "#FF7F50", "#FFB347", "#E9967A", "#F08080", "#FFA500", "#FF4500", "#FF7043", "#FF6F00", "#FF9E80", "#FFA07A", "#FF8C00", "#FF6347", "#FF7F50", "#FFB347", "#E9967A", "#F08080", "#FFA500", "#FF4500", "#FF7043"]
         self.totalclicks = 0 
         self.cookies = 0
-        self.autoclickvalue = 1 #for auto bot 
+        self.autoclickvalue = 1 #for hand left
+        self.autoclickvalue2 = 2 #for hand right
+        self.ofshorevalue = 5 #for company
         self.clickworth = 1 #for maunyl 
         self.times = 1
         self.cookie = pygame.Rect(950 - 150,400 - 150,300,300)
@@ -34,15 +36,23 @@ class Game:
         self.python = pygame.image.load('fidesz.png')
         self.cooinnumb = 10
         self.multipCost = 20
-        self.AutomultipCost = 50
+        self.AutomultipCost = 10
+        self.AutomultipCost2 = 1
+        self.offshorecompany = 10
         self.ShowImg = True
         self.show_coin_time = None 
+        self.show_coin_time1 = None 
         self.autoclick_On = False
-        
+        self.autoclick_On2 = False
+        self.autoclick_On3 = False
+        self.show_coin_time2 = None
+        self.Enableauto2 = False
+        self.Enablecompany = False
 
     def drawotp(self):
         self.python = pygame.image.load('fidesz.png')
         screen.blit(self.python, (650,120))
+        
     
     def textfidesz(self):
         self.maintxt = text_font.render("Fidesz  Clicker","True","black")
@@ -126,7 +136,8 @@ class Game:
                 
                 self.clickshop1()
                 self.autoclick()
-               #self.button3()
+                self.autoclick22()
+                self.companylogicauto()
                 #self.button4()
                 #self.button5()
 
@@ -138,25 +149,39 @@ class Game:
         screen.blit(self.imagee, (self.x,self.y))
 
     def updateMultipCost(self):
-        self.multipCost = round(self.multipCost * 1.5)
+        self.multipCost = round(self.multipCost * 2.5)
     
     def incraseClickWorth(self):
-        self.clickworth += 1
+        self.clickworth += 2
         self.updateMultipCost()
     
     def autoupdateMultipCost(self):
-        self.AutomultipCost = round(self.AutomultipCost * 1.5)
+        self.AutomultipCost = round(self.AutomultipCost * 2.5)
         
     
     def autoincraseClickWorth(self):
-        self.autoclickvalue += 1
+        self.autoclickvalue += 2
         self.autoupdateMultipCost()
+
+    def incraseClickWorth2(self):
+        self.clickworth += 7
+        self.autoupdateMultipCost2()
+
+    def autoupdateMultipCost2(self):
+        self.AutomultipCost2 = round(self.AutomultipCost2 * 1.5)
+        
+    
+    def autoincraseClickWorth1(self):
+        self.autoclickvalue2 += 7
+        self.autoupdateMultipCost2()
+
+
 
     def getPos(self):
         return pygame.mouse.get_pos()
 
     def clickshop1(self):
-        self.bt1 = self.button(f"Cost: [{self.multipCost}] | Multiplier: x{self.clickworth}", y=130)
+        self.bt1 = self.button(f"Törvény rendelet", y=130)
         self.shopUI = False
 
         if self.bt1.collidepoint(self.getPos()):
@@ -176,25 +201,45 @@ class Game:
         if not hasattr(self, 'last_autoclick_time'):
             self.last_autoclick_time = current_time  
         
-        if current_time - self.last_autoclick_time >= 1000:  
+        if current_time - self.last_autoclick_time >= 500:  
             self.playsounds("pop.mp3",3,0.01)
             self.cookies += self.autoclickvalue 
             self.totalclicks += self.autoclickvalue
             self.last_autoclick_time = current_time  
-            self.show_coin_time = current_time + 500
+            self.show_coin_time = current_time + 250
         
         if self.show_coin_time is not None and current_time < self.show_coin_time:
             self.image(680, 450, "Clickermouse.png")
 
         else:
             self.show_coin_time = None  
+
+
+    def logicautoclick2(self):
+        current_time2 = pygame.time.get_ticks()  
+
+        if not hasattr(self, 'last_autoclick_time2'):
+            self.last_autoclick_time2 = current_time2  
+        
+        if current_time2 - self.last_autoclick_time2 >= 500:  
+            self.playsounds("pop.mp3",3,0.01)
+            self.cookies += self.autoclickvalue2 
+            self.totalclicks += self.autoclickvalue2
+            self.last_autoclick_time2 = current_time2  
+            self.show_coin_time1 = current_time2 + 250
+        
+        if self.show_coin_time1 is not None and current_time2 < self.show_coin_time1:
+            self.image(1025, 450, "mouseright.png")
+
+        else:
+            self.show_coin_time1 = None  
             
 
     def autoclick(self):
         #logic start
         
         #logic end
-        self.bt2 = self.button(f"Cost: [{self.AutomultipCost}] | Multiplier: x{self.autoclickvalue}", y=190)
+        self.bt2 = self.button(f"Választó 1 ", y=190)
         self.shopUI = False
         if self.bt2.collidepoint(self.getPos()):
             self.bt2 = self.button(f" Cost: [{self.AutomultipCost}] | Multiplier: x{self.autoclickvalue}", y=190, color="#71797E")
@@ -205,19 +250,88 @@ class Game:
                     self.cookies -= self.AutomultipCost
                     self.autoincraseClickWorth()
                     self.autoclick_On = True
+                    self.Enableauto2 = True
+
+
+
+
+    def autoclick22(self):
+        if self.Enableauto2 == True:
+            self.bt3 = self.button(f"Választó 1 (premium)", x=1660, y=190)
+            self.shopUI = False
+            if self.bt3.collidepoint(self.getPos()):
+                self.bt3 = self.button(f" Cost: [{self.AutomultipCost2}] | Multiplier: x{self.autoclickvalue2}", x=1660, y=190, color="#71797E")
+                if pygame.mouse.get_pressed()[0]:
+                    self.shopUI = True
+                    if self.cookies >= self.AutomultipCost2:
+                        self.playsounds("kozpenz.mp3", 1, 0.4)
+                        self.cookies -= self.AutomultipCost2
+                        self.autoincraseClickWorth1()
+                        self.Enablecompany = True
+                        self.autoclick_On2 = True  
+                         
+
  
 
+    def incraseClickWorthOfshore(self):
+        self.clickworth += 1982
+        self.autoupdateMultipCost2()
 
-    def button3(self):
-        self.bt3 = self.button("tes", y=250)
-        self.shopUI = False
-        if self.bt3.collidepoint(self.getPos()):
-            if pygame.mouse.get_pressed()[0]:
-                self.shopUI = True
-                self.bt3 = self.button("tes", y=250, color="#848884")
+    def autoupdatecompanycost(self):
+        self.offshorecompany = round(self.offshorecompany * 4)
+        
+    
+    def autoincresecompanyclickworth(self):
+        self.ofshorevalue += 1982 #need to fix it rn
+        self.autoupdatecompanycost()
 
-            else:
-                self.bt3 = self.button("tes", y=250, color="#71797E")
+
+    def companyautoclick(self):
+        current_time3 = pygame.time.get_ticks()
+
+        # Ensure the last autoclick time is initialized
+        if not hasattr(self, 'last_autoclick_time3'):
+            self.last_autoclick_time3 = current_time3
+
+        # Perform autoclick action every 500ms
+        if current_time3 - self.last_autoclick_time3 >= 5000:
+            generated_amount = self.ofshorevalue  
+            self.playsounds("pop.mp3", 3, 0.01)
+            self.cookies += generated_amount  
+            self.totalclicks += generated_amount
+            self.last_autoclick_time3 = current_time3
+            self.show_coin_time2 = current_time3 + 350  
+
+            
+            self.generated_text = f"Közpénz:{generated_amount} generated!"  
+        
+        
+        self.image(-30, 818, "company.png")  
+
+        # Display the generated text for 350ms
+        if self.show_coin_time2 is not None and current_time3 < self.show_coin_time2:
+            text_font = pygame.font.SysFont(None, 40)  
+            self.maintxt = text_font.render(self.generated_text, True, "black") 
+            screen.blit(self.maintxt, (30, 800))  
+        else:
+            self.show_coin_time2 = None  
+
+    def companylogicauto(self):
+        #logic start
+        if self.Enablecompany == True:
+            #logic end
+            self.bt4 = self.button(f"Offshoreceg",x=1660 , y=130)
+            self.shopUI = False
+            if self.bt4.collidepoint(self.getPos()):
+                self.bt4 = self.button(f" Cost: [{self.offshorecompany}] | Multiplier: x{self.ofshorevalue}",x=1660 ,y=130, color="#71797E")
+                if pygame.mouse.get_pressed()[0]:
+                    self.shopUI = True
+                    if self.cookies >= self.offshorecompany:
+                        self.playsounds("kozpenz.mp3",1,0.4)
+                        self.cookies -= self.offshorecompany
+                        self.autoincresecompanyclickworth()
+                        self.autoclick_On3 = True
+                        
 
 
     def button4(self):
@@ -319,6 +433,10 @@ while True:
     game.render()
     if game.autoclick_On == True:
         game.logicautoclick()
+    if game.autoclick_On2 == True:
+        game.logicautoclick2()
+    if game.autoclick_On3 == True:
+        game.companyautoclick()
 
     pygame.display.update()
     clock.tick(600) 
