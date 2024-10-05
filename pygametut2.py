@@ -31,7 +31,8 @@ class Game:
         self.cookie = pygame.Rect(950 - 150, 400 - 150, 300, 300)
         self.slider_rect = pygame.Rect(20, 20, 200, 10)
         self.slider_button_rect = pygame.Rect(self.slider_rect.x, self.slider_rect.y - 5, 20, 20)
-        
+        self.cookie_color = "#f6871f"
+
         self.backgrounds = ['idk.jpeg', 'citybackground.jpeg', 'background3.jpg', 'background4.jpg', 'background5.png', 'background6.png']
         self.current_background = self.backgrounds[0]  
         self.purchased_backgrounds = [False] * 6 
@@ -53,7 +54,16 @@ class Game:
         self.offshorecompany = 500000
         self.offshorecompany2nd = 1000000
         self.maximumclicks = 100000000
-
+        self.show_coin_time = None
+        self.show_coin_time1 = None
+        self.show_coin_time2 = None
+        self.show_coin_time3 = None
+        self.show_coin_time4 = None
+        self.base_value = 100  
+        self.base_value2company = 200  
+        self.offshorecompany_orban = 5000000 
+        self.ofshorevalue_orban = 10 
+        self.coolmusicplay = True
 
                 
         self.autoclick_On = False  
